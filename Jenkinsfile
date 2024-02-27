@@ -71,18 +71,38 @@ pipeline {
                 }
             }
         }
-
-        stage('Notify Pipeline Status') {
-            steps {
-                script {
-                    currentBuild.result = currentBuild.resultIsBetterOrEqualTo('FAILURE') ? 'FAILURE' : 'SUCCESS'
-
-                    slackSend color: currentBuild.result == 'SUCCESS' ? 'good' : 'danger',
-                            message: "Kubernetes Build ${currentBuild.result}",
-                            teamDomain: 'DevOps',
-                            tokenCredentialId: SLACK_CREDENTIAL_ID,
-                            channel: SLACK_CHANNEL
-                }
+    }
+    post {
+        success {
+            script {
+                def attachments = [
+                    [
+                        "color": "good",
+                        "text": "Build Successful",
+                        "fields": [
+                            ["title": "Project", "value": "${env.JOB_NAME}", "short": true],
+                            ["title": "Build Number", "value": "${env.BUILD_NUMBER}", "short": true],
+                            ["title": "URL", "value": "${env.BUILD_URL}", "short": false]
+                        ]
+                    ]
+                ]
+                slackSend color: 'good', channel: '#devops', attachments: attachments
+            }
+        }
+        failure {
+            script {
+                def attachments = [
+                    [
+                        "color": "danger",
+                        "text": "Build Failed",
+                        "fields": [
+                            ["title": "Project", "value": "${env.JOB_NAME}", "short": true],
+                            ["title": "Build Number", "value": "${env.BUILD_NUMBER}", "short": true],
+                            ["title": "URL", "value": "${env.BUILD_URL}", "short": false]
+                        ]
+                    ]
+                ]
+                slackSend color: 'danger', channel: '#devops', attachments: attachments
             }
         }
     }
