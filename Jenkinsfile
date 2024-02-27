@@ -9,7 +9,7 @@ pipeline {
         }
         stage('Started') {
             steps {
-                slackSend botUser: true, channel: '#devops', color: 'good', message: 'Backend Build Started', teamDomain: 'DevOps', tokenCredentialId: 'slack'
+                slackSend botUser: true, channel: '#devops', color: 'good', message: 'Kubernetes Build Started', teamDomain: 'DevOps', tokenCredentialId: 'slack'
             }
         }
         stage('terraform init') {
