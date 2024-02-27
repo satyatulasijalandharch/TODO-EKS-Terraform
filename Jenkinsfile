@@ -53,9 +53,10 @@ pipeline {
                     def retryInterval = 30
 
                     for (int i = 0; i < maxRetries; i++) {
-                        def nodeStatus = sh(script: 'kubectl get nodes --field-selector=status.phase=Running --no-headers', returnStatus: true).trim()
+                        def nodeStatus = sh(script: 'kubectl get nodes --selector=status.phase=Running --no-headers', returnStatus: true).trim()
 
                         if (nodeStatus == 0) {
+                            // Change the condition to check for non-zero exit code
                             clusterReady = true
                             break
                         } else {
