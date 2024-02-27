@@ -70,6 +70,30 @@ pipeline {
                     }
                 }
             }
+        }stage('Verify Cluster Provisioning') {
+            steps {
+                script {
+                    def clusterReady = false
+                    def maxRetries = 30
+                    def retryInterval = 30
+
+                    for (int i = 0; i < maxRetries; i++) {
+                        def nodeStatus = sh(script: 'kubectl get nodes --selector=status.phase=Running --no-headers', returnStatus: true).trim()
+
+                        if (nodeStatus.isEmpty()) {
+                            clusterReady = true
+                            break
+                        } else {
+                            echo "Cluster not ready. Retrying in ${retryInterval} seconds..."
+                            sleep retryInterval
+                        }
+                    }
+
+                    if (!clusterReady) {
+                        error "Cluster provisioning did not complete within the expected time."
+                    }
+                }
+            }
         }
 
         stage('Install Ingress-Nginx') {
