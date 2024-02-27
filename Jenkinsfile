@@ -41,12 +41,15 @@ pipeline {
 
         stage('terraform Apply/Destroy') {
             steps {
-                sh 'terraform apply --auto-approve'
+                sh 'terraform ${action} --auto-approve'
             }
         }
 
 
         stage('Install Ingress-Nginx') {
+            when {
+                expression { params.action != 'destroy' }
+            }
             steps {
                 script {
                     sh "aws eks update-kubeconfig --name EKS_TODO --region ap-south-1"
@@ -58,6 +61,9 @@ pipeline {
         }
 
         stage('Install ArgoCD') {
+            when {
+                expression { params.action != 'destroy' }
+            }
             steps {
                 script {
                     sh "kubectl create namespace ${ARGOCD_NAMESPACE}"
