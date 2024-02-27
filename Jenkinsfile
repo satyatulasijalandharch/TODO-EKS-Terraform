@@ -74,6 +74,7 @@ pipeline {
                     echo "ArgoCD Admin Password: ${argocdPassword}"
                     sh "kubectl apply -f argocd-ingress.yaml -n ${ARGOCD_NAMESPACE}"
                     sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
+                    sh "sudo apt install jq -y"
                 }
             }
         }
