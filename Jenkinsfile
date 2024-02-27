@@ -45,18 +45,6 @@ pipeline {
             }
         }
 
-        stage('Switch to Ubuntu') {
-            steps {
-                script {
-                    // Switch to the ubuntu user using sudo
-                    sh 'sudo su - ubuntu'
-                    
-                    // Now you are running as the ubuntu user, you can execute commands as ubuntu.
-                    sh 'whoami' // Example command as ubuntu user
-                }
-            }
-        }
-
         stage('Verify Cluster Provisioning') {
             steps {
                 script {
@@ -65,7 +53,7 @@ pipeline {
                     def retryInterval = 30
 
                     for (int i = 0; i < maxRetries; i++) {
-                        def nodeStatus = sh(script: 'kubectl get nodes --selector=status.phase=Running --no-headers', returnStatus: true).trim()
+                        def nodeStatus = sh(script: 'sudo -u ubuntu kubectl get nodes --selector=status.phase=Running --no-headers', returnStatus: true).trim()
 
                         if (nodeStatus.isEmpty()) {
                             clusterReady = true
