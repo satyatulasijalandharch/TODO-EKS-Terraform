@@ -95,18 +95,18 @@ pipeline {
                 }
             }
         }
-    }
 
-    stage('Notify Pipeline Status') {
-        steps {
-            script {
-                currentBuild.result = currentBuild.resultIsBetterOrEqualTo('FAILURE') ? 'FAILURE' : 'SUCCESS'
+        stage('Notify Pipeline Status') {
+            steps {
+                script {
+                    currentBuild.result = currentBuild.resultIsBetterOrEqualTo('FAILURE') ? 'FAILURE' : 'SUCCESS'
 
-                slackSend color: currentBuild.result == 'SUCCESS' ? 'good' : 'danger',
-                          message: "Kubernetes Build ${currentBuild.result}",
-                          teamDomain: 'DevOps',
-                          tokenCredentialId: SLACK_CREDENTIAL_ID,
-                          channel: SLACK_CHANNEL
+                    slackSend color: currentBuild.result == 'SUCCESS' ? 'good' : 'danger',
+                            message: "Kubernetes Build ${currentBuild.result}",
+                            teamDomain: 'DevOps',
+                            tokenCredentialId: SLACK_CREDENTIAL_ID,
+                            channel: SLACK_CHANNEL
+                }
             }
         }
     }
