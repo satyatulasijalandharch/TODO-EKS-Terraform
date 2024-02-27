@@ -45,6 +45,18 @@ pipeline {
             }
         }
 
+        stage('Switch to Ubuntu') {
+            steps {
+                script {
+                    // Switch to the ubuntu user using sudo
+                    sh 'sudo su - ubuntu'
+                    
+                    // Now you are running as the ubuntu user, you can execute commands as ubuntu.
+                    sh 'whoami' // Example command as ubuntu user
+                }
+            }
+        }
+
         stage('Verify Cluster Provisioning') {
             steps {
                 script {
