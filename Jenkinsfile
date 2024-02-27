@@ -7,6 +7,11 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Started') {
+            steps {
+                slackSend botUser: true, channel: '#devops', color: 'good', message: 'Backend Build Started', teamDomain: 'DevOps', tokenCredentialId: 'slack'
+            }
+        }
         stage('terraform init') {
             steps {
                 sh 'terraform init'
