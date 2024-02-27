@@ -1,0 +1,46 @@
+# Ignore Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Ignore Terraform lock files
+*.terraform.lock.hcl
+
+# Ignore all files in .terraform directories
+**/.terraform/*
+
+# Ignore override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Ignore crash log files
+crash.log
+
+# Ignore any .tfvars files that are generated automatically for each Terraform run. Most
+# .tfvars files are managed as part of configuration and so should be included in
+# version control.
+#
+# example.tfvars
+*.auto.tfvars
+
+# Ignore packer files
+**/packer_cache/**
+*.box
+
+# Ignore all .env files
+*.env
+
+# Ignore sensitive data files
+secrets.*
+credentials.*
+
+# Git files
+.git
+.gitattributes
+.gitmodules
+.gitkeep
