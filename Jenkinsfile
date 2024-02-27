@@ -74,6 +74,7 @@ pipeline {
         stage('Install Ingress-Nginx') {
             steps {
                 script {
+                    sh "aws eks update-kubeconfig --name EKS_TODO --region ap-south-1"
                     sh "kubectl create namespace ${INGRESS_NAMESPACE}"
                     sh "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/baremetal/deploy.yaml -n ${INGRESS_NAMESPACE}"
                     sh "kubectl wait --for=condition=Ready pod -l app.kubernetes.io/component=controller -n ${INGRESS_NAMESPACE}"
