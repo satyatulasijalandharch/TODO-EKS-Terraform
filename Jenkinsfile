@@ -52,7 +52,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh "aws eks update-kubeconfig --name EKS_TODO --region ap-south-1"
+                    sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
                     sh "kubectl create namespace ${INGRESS_NAMESPACE}"
                     sh "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/baremetal/deploy.yaml -n ${INGRESS_NAMESPACE}"
                     sh "kubectl wait --for=condition=Ready pod -l app.kubernetes.io/component=controller -n ${INGRESS_NAMESPACE}"
@@ -66,6 +66,7 @@ pipeline {
             }
             steps {
                 script {
+                    sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
                     sh "kubectl create namespace ${ARGOCD_NAMESPACE}"
                     sh "kubectl apply -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
                     sh "kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=argocd-server -n ${ARGOCD_NAMESPACE}"
