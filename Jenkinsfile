@@ -15,13 +15,30 @@ pipeline {
             }
         }
 
-        stage('Started') {
+        stage('Build Started') {when {
+                expression { params.action != 'destroy' }
+            }
             steps {
                 slackSend(
                     botUser: true,
                     channel: SLACK_CHANNEL,
                     color: 'good',
-                    message: "Kubernetes Build ${env.BUILD_NUMBER} Started",
+                    message: "Kubernetes Build [${env.BUILD_NUMBER}] Started",
+                    teamDomain: 'DevOps',
+                    tokenCredentialId: SLACK_CREDENTIAL_ID
+                )
+            }
+        }
+        stage('Destroy Started') {
+            when {
+                expression { params.action == 'destroy' }
+            }
+            steps {
+                slackSend(
+                    botUser: true,
+                    channel: SLACK_CHANNEL,
+                    color: 'good',
+                    message: "Kubernetes Destroy [${env.BUILD_NUMBER}] Started",
                     teamDomain: 'DevOps',
                     tokenCredentialId: SLACK_CREDENTIAL_ID
                 )
