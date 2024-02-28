@@ -20,7 +20,29 @@ pipeline {
                 slackSend botUser: true, channel: SLACK_CHANNEL, color: 'good', message: 'Kubernetes Build Started', teamDomain: 'DevOps', tokenCredentialId: SLACK_CREDENTIAL_ID
             }
         }
+        stage('Cluster Cleanup') {
+            when {
+                expression { params.action == 'destroy' }
+            }
+            steps {
+                script {
+                    sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
+                    
+                    // Uninstall ArgoCD
+                    sh "kubectl delete -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+                    
+                    // Wait for ArgoCD components to be deleted (optional)
+                    sh "kubectl wait --for=delete pod -l app.kubernetes.io/name=argocd-server -n ${ARGOCD_NAMESPACE}"
+                    
+                    // Uninstall Ingress-Nginx
+                    sh "kubectl delete namespace ${INGRESS_NAMESPACE}"
 
+                    // Additional cleanup steps as needed
+
+                    echo "Cluster cleanup completed."
+                }
+            }
+        }
         stage('terraform init') {
             steps {
                 sh 'terraform init'
