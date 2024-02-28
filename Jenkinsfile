@@ -17,9 +17,17 @@ pipeline {
 
         stage('Started') {
             steps {
-                slackSend botUser: true, channel: SLACK_CHANNEL, color: 'good', message: 'Kubernetes Build Started', teamDomain: 'DevOps', tokenCredentialId: SLACK_CREDENTIAL_ID
+                slackSend(
+                    botUser: true,
+                    channel: SLACK_CHANNEL,
+                    color: 'good',
+                    message: "Kubernetes Build ${env.BUILD_NUMBER} Started",
+                    teamDomain: 'DevOps',
+                    tokenCredentialId: SLACK_CREDENTIAL_ID
+                )
             }
         }
+        
         stage('Cluster Cleanup') {
             when {
                 expression { params.action == 'destroy' }
