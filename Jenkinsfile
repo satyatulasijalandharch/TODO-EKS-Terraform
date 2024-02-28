@@ -35,9 +35,10 @@ pipeline {
                     sh "kubectl wait --for=delete pod -l app.kubernetes.io/name=argocd-server -n ${ARGOCD_NAMESPACE}"
                     
                     // Uninstall Ingress-Nginx
-                    sh "kubectl delete namespace ${INGRESS_NAMESPACE}"
+                    sh "kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml -n ${INGRESS_NAMESPACE}"
 
-                    // Additional cleanup steps as needed
+                    // Wait for Ingress-Nginx components to be deleted (optional)
+                    sh "kubectl wait --for=delete pod -l app.kubernetes.io/component=controller -n ${INGRESS_NAMESPACE}"
 
                     echo "Cluster cleanup completed."
                 }
