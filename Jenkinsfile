@@ -75,7 +75,15 @@ pipeline {
             steps {
                 script {
                     sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
-                    sh "kubectl create namespace ${INGRESS_NAMESPACE}"
+
+                    def namespaceExists = sh(script: "kubectl get namespace ${INGRESS_NAMESPACE} --ignore-not-found", returnStatus: true) == 0
+
+                    if (!namespaceExists) {
+                        sh "kubectl create namespace ${INGRESS_NAMESPACE}"
+                    } else {
+                        echo "Namespace ${INGRESS_NAMESPACE} already exists. Skipping namespace creation."
+                    }
+                    //sh "kubectl create namespace ${INGRESS_NAMESPACE}"
                     sh "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml -n ${INGRESS_NAMESPACE}"
                     sh "kubectl wait --for=condition=Ready pod -l app.kubernetes.io/component=controller -n ${INGRESS_NAMESPACE}"
                 }
@@ -89,7 +97,15 @@ pipeline {
             steps {
                 script {
                     sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
-                    sh "kubectl create namespace ${ARGOCD_NAMESPACE}"
+
+                    def namespaceExists = sh(script: "kubectl get namespace ${ARGOCD_NAMESPACE} --ignore-not-found", returnStatus: true) == 0
+
+                    if (!namespaceExists) {
+                        sh "kubectl create namespace ${ARGOCD_NAMESPACE}"
+                    } else {
+                        echo "Namespace ${ARGOCD_NAMESPACE} already exists. Skipping namespace creation."
+                    }
+                    //sh "kubectl create namespace ${ARGOCD_NAMESPACE}"
                     sh "kubectl apply -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
                     sh "kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=argocd-server -n ${ARGOCD_NAMESPACE}"
                     sh 'kubectl patch svc argocd-server -n argocd -p {\'"spec": {"type": "NodePort"}\'}'
