@@ -92,7 +92,7 @@ pipeline {
                     sh "kubectl create namespace ${ARGOCD_NAMESPACE}"
                     sh "kubectl apply -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
                     sh "kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=argocd-server -n ${ARGOCD_NAMESPACE}"
-                    sh "kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'"
+                    sh 'kubectl patch svc argocd-server -n argocd -p {\'"spec": {"type": "NodePort"}\'}'
                     def argocdPassword = sh(script: "kubectl -n ${ARGOCD_NAMESPACE} get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 --decode", returnStdout: true).trim()
                     echo "ArgoCD Admin Password: ${argocdPassword}"
                     sh "kubectl apply -f argocd-ingress.yaml"
