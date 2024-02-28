@@ -74,6 +74,8 @@ pipeline {
                     def argocdPassword = sh(script: "kubectl -n ${ARGOCD_NAMESPACE} get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 --decode", returnStdout: true).trim()
                     echo "ArgoCD Admin Password: ${argocdPassword}"
                     sh "kubectl apply -f argocd-ingress.yaml"
+                    def argocdPassword = sh(script: 'kubectl get ingress -n argocd', returnStdout: true).trim()
+                    echo "Ingress Output:\n${ingressOutput}"
                     sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
                 }
             }
