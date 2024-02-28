@@ -27,7 +27,7 @@ pipeline {
                 )
             }
         }
-        
+
         stage('Cluster Cleanup') {
             when {
                 expression { params.action == 'destroy' }
@@ -85,7 +85,7 @@ pipeline {
                 script {
                     sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
 
-                    def namespaceExists = sh(script: "kubectl get namespace ${INGRESS_NAMESPACE} --ignore-not-found", returnStatus: true) == 0
+                    def namespaceExists = sh(script: "kubectl get namespace ${INGRESS_NAMESPACE}", returnStatus: true) == 0
 
                     if (!namespaceExists) {
                         sh "kubectl create namespace ${INGRESS_NAMESPACE}"
@@ -106,7 +106,7 @@ pipeline {
                 script {
                     sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
 
-                    def namespaceExists = sh(script: "kubectl get namespace ${ARGOCD_NAMESPACE} --ignore-not-found", returnStatus: true) == 0
+                    def namespaceExists = sh(script: "kubectl get namespace ${ARGOCD_NAMESPACE}", returnStatus: true) == 0
 
                     if (!namespaceExists) {
                         sh "kubectl create namespace ${ARGOCD_NAMESPACE}"
