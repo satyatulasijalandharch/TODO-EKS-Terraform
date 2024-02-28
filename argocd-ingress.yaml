@@ -6,15 +6,15 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
-  ingressClassName: nginx  # Use 'spec.ingressClassName' instead of the deprecated annotation
+  ingressClassName: nginx # Use 'spec.ingressClassName' instead of the deprecated annotation
   rules:
-  - host: argocd.mrstjch.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: argocd-server
-            port:
-              number: 80
+    - host: argocd.mrstjch.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 80
