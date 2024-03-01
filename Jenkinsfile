@@ -114,7 +114,6 @@ pipeline {
                 }
             }
         }
-
         stage('Install ArgoCD') {
             when {
                 expression { params.action != 'destroy' }

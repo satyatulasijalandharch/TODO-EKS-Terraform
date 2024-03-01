@@ -6,9 +6,9 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
-  ingressClassName: nginx # Use 'spec.ingressClassName' instead of the deprecated annotation
+  ingressClassName: nginx
   rules:
-    - host: argocd.mrstjch.com
+    - host: argo.mrstjch.com
       http:
         paths:
           - path: /
