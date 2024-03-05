@@ -53,17 +53,17 @@ pipeline {
                 script {
                     sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
                     
-                    // Uninstall ArgoCD
-                    sh "kubectl delete -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+                    // Check if ArgoCD exists before uninstalling
+                    if (sh(script: "kubectl get ns ${ARGOCD_NAMESPACE}", returnStatus: true) == 0) {
+                        sh "kubectl delete -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+                        sh "kubectl wait --for=delete pod -l app.kubernetes.io/name=argocd-server -n ${ARGOCD_NAMESPACE}"
+                    }
                     
-                    // Wait for ArgoCD components to be deleted (optional)
-                    sh "kubectl wait --for=delete pod -l app.kubernetes.io/name=argocd-server -n ${ARGOCD_NAMESPACE}"
-                    
-                    // Uninstall Ingress-Nginx
-                    sh "kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml -n ${INGRESS_NAMESPACE}"
-
-                    // Wait for Ingress-Nginx components to be deleted (optional)
-                    sh "kubectl wait --for=delete pod -l app.kubernetes.io/component=controller -n ${INGRESS_NAMESPACE}"
+                    // Check if Ingress-Nginx exists before uninstalling
+                    if (sh(script: "kubectl get ns ${INGRESS_NAMESPACE}", returnStatus: true) == 0) {
+                        sh "kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml -n ${INGRESS_NAMESPACE}"
+                        sh "kubectl wait --for=delete pod -l app.kubernetes.io/component=controller -n ${INGRESS_NAMESPACE}"
+                    }
 
                     echo "Cluster cleanup completed."
                 }
@@ -177,19 +177,17 @@ pipeline {
 
                 // Add Terraform destroy commands here
                 sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
-                    
-                // Uninstall ArgoCD
-                sh "kubectl delete -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+                // Check if ArgoCD exists before uninstalling
+                if (sh(script: "kubectl get ns ${ARGOCD_NAMESPACE}", returnStatus: true) == 0) {
+                    sh "kubectl delete -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+                    sh "kubectl wait --for=delete pod -l app.kubernetes.io/name=argocd-server -n ${ARGOCD_NAMESPACE}"
+                }
                 
-                // Wait for ArgoCD components to be deleted (optional)
-                sh "kubectl wait --for=delete pod -l app.kubernetes.io/name=argocd-server -n ${ARGOCD_NAMESPACE}"
-                
-                // Uninstall Ingress-Nginx
-                sh "kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml -n ${INGRESS_NAMESPACE}"
-
-                // Wait for Ingress-Nginx components to be deleted (optional)
-                sh "kubectl wait --for=delete pod -l app.kubernetes.io/component=controller -n ${INGRESS_NAMESPACE}"
-
+                // Check if Ingress-Nginx exists before uninstalling
+                if (sh(script: "kubectl get ns ${INGRESS_NAMESPACE}", returnStatus: true) == 0) {
+                    sh "kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml -n ${INGRESS_NAMESPACE}"
+                    sh "kubectl wait --for=delete pod -l app.kubernetes.io/component=controller -n ${INGRESS_NAMESPACE}"
+                }
                 echo "Cluster cleanup completed."
                 sh "terraform init"
                 sh "terraform destroy -auto-approve"
