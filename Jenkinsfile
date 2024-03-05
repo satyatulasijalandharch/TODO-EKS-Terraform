@@ -174,6 +174,17 @@ pipeline {
                     ]
                 ]
                 slackSend color: 'danger', channel: '#devops', attachments: attachments
+
+                // Add Terraform destroy commands here
+                sh "terraform init"
+                sh "terraform destroy -auto-approve"
+
+                // Send notification about Terraform destroy
+                slackSend(
+                    color: 'warning',
+                    channel: '#devops',
+                    message: "Terraform infrastructure destroyed due to build failure"
+                )
             }
         }
     }
