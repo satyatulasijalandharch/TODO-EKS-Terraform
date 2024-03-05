@@ -51,7 +51,9 @@ pipeline {
             }
             steps {
                 script {
-                    sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
+                    if (sh(script: "aws eks --region ap-south-1 describe-cluster --name EKS_TODO", returnStatus: true) == 0) {
+                        sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
+                    }
                     
                     // Check if ArgoCD exists before uninstalling
                     if (sh(script: "kubectl get ns ${ARGOCD_NAMESPACE}", returnStatus: true) == 0) {
@@ -176,7 +178,9 @@ pipeline {
                 slackSend color: 'danger', channel: '#devops', attachments: attachments
 
                 // Add Terraform destroy commands here
-                sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
+                if (sh(script: "aws eks --region ap-south-1 describe-cluster --name EKS_TODO", returnStatus: true) == 0) {
+                    sh "aws eks --region ap-south-1 update-kubeconfig --name EKS_TODO"
+                }
                 // Check if ArgoCD exists before uninstalling
                 if (sh(script: "kubectl get ns ${ARGOCD_NAMESPACE}", returnStatus: true) == 0) {
                     sh "kubectl delete -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
