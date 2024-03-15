@@ -63,7 +63,7 @@ pipeline {
                     
                     // Check if Ingress-Nginx exists before uninstalling
                     if (sh(script: "kubectl get ns ${INGRESS_NAMESPACE}", returnStatus: true) == 0) {
-                        sh "kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml -n ${INGRESS_NAMESPACE}"
+                        sh "kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/aws/deploy.yaml -n ${INGRESS_NAMESPACE}"
                         sh "kubectl wait --for=delete pod -l app.kubernetes.io/component=controller -n ${INGRESS_NAMESPACE}"
                     }
 
@@ -108,7 +108,7 @@ pipeline {
 
                     if (!namespaceExists) {
                         sh "kubectl create namespace ${INGRESS_NAMESPACE}"
-                        sh "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml -n ${INGRESS_NAMESPACE}"
+                        sh "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/aws/deploy.yaml -n ${INGRESS_NAMESPACE}"
                         sh "kubectl wait --for=condition=Ready pod -l app.kubernetes.io/component=controller -n ${INGRESS_NAMESPACE} --timeout=2m"
                     } else {
                         echo "Namespace ${INGRESS_NAMESPACE} already exists. Skipping namespace creation."
