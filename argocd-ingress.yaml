@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: argo.mrstjch.com
+    - host: argo.mrstjch.local
       http:
         paths:
           - path: /
