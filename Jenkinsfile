@@ -57,7 +57,7 @@ pipeline {
                     
                     // Check if ArgoCD exists before uninstalling
                     if (sh(script: "kubectl get ns ${ARGOCD_NAMESPACE}", returnStatus: true) == 0) {
-                        sh "kubectl delete -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+                        sh "kubectl delete -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.10.2/manifests/install.yaml"
                         sh "kubectl wait --for=delete pod -l app.kubernetes.io/name=argocd-server -n ${ARGOCD_NAMESPACE}"
                     }
                     
@@ -184,13 +184,13 @@ pipeline {
                 }
                 // Check if ArgoCD exists before uninstalling
                 if (sh(script: "kubectl get ns ${ARGOCD_NAMESPACE}", returnStatus: true) == 0) {
-                    sh "kubectl delete -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+                    sh "kubectl delete -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.10.2/manifests/install.yaml"
                     sh "kubectl wait --for=delete pod -l app.kubernetes.io/name=argocd-server -n ${ARGOCD_NAMESPACE}"
                 }
                 
                 // Check if Ingress-Nginx exists before uninstalling
                 if (sh(script: "kubectl get ns ${INGRESS_NAMESPACE}", returnStatus: true) == 0) {
-                    sh "kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml -n ${INGRESS_NAMESPACE}"
+                    sh "kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/aws/deploy.yaml -n ${INGRESS_NAMESPACE}"
                     sh "kubectl wait --for=delete pod -l app.kubernetes.io/component=controller -n ${INGRESS_NAMESPACE}"
                 }
                 echo "Cluster cleanup completed."
