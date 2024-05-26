@@ -128,7 +128,7 @@ pipeline {
 
                     if (!namespaceExists) {
                         sh "kubectl create namespace ${ARGOCD_NAMESPACE}"
-                        sh "kubectl apply -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+                        sh "kubectl apply -n ${ARGOCD_NAMESPACE} -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.10.2/manifests/install.yaml"
                         sh "kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=argocd-server -n ${ARGOCD_NAMESPACE} --timeout=2m"
                         sh 'kubectl patch svc argocd-server -n argocd -p {\'"spec": {"type": "NodePort"}\'}'
                         //kubectl patch svc argocd-server -n argocd --type='json' -p='[{"op": "replace", "path": "/spec/type", "value": "NodePort"}]'
